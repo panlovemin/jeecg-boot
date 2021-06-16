@@ -31,9 +31,13 @@ public class SysGatewayRoute implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**主键*/
-    @TableId(type = IdType.ID_WORKER_STR)
+    @TableId(type = IdType.ASSIGN_ID)
     @ApiModelProperty(value = "主键")
     private String id;
+
+    /**routerKEy*/
+    @ApiModelProperty(value = "路由ID")
+    private String routerId;
 
     /**服务名*/
     @Excel(name = "服务名", width = 15)
@@ -68,10 +72,10 @@ public class SysGatewayRoute implements Serializable {
     private Integer retryable;
 
     /**是否为保留数据:0-否 1-是*/
-    @Excel(name = "是否重试", width = 15)
+    @Excel(name = "保留数据", width = 15)
     @ApiModelProperty(value = "保留数据")
     @Dict(dicCode = "yn")
-    private Integer persist;
+    private Integer persistable;
 
     /**是否在接口文档中展示:0-否 1-是*/
     @Excel(name = "在接口文档中展示", width = 15)

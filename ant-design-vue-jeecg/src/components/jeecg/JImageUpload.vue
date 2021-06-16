@@ -11,14 +11,16 @@
       :beforeUpload="beforeUpload"
       :disabled="disabled"
       :isMultiple="isMultiple"
-      :showUploadList="isMultiple"
+
       @change="handleChange"
       @preview="handlePreview"
-      :class="!isMultiple?'imgupload':''">
-      <img v-if="!isMultiple && picUrl" :src="getAvatarView()" style="height:104px;max-width:300px"/>
-      <div v-else class="iconp">
-        <a-icon :type="uploadLoading ? 'loading' : 'plus'" />
-        <div class="ant-upload-text">{{ text }}</div>
+      :class="[!isMultiple?'imgupload':'', (!isMultiple && picUrl)?'image-upload-single-over':'' ]">
+      <div>
+        <!--<img v-if="!isMultiple && picUrl" :src="getAvatarView()" style="width:100%;height:100%"/>-->
+        <div class="iconp">
+          <a-icon :type="uploadLoading ? 'loading' : 'plus'" />
+          <div class="ant-upload-text">{{ text }}</div>
+        </div>
       </div>
       <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel()">
         <img alt="example" style="width: 100%" :src="previewImage"/>
@@ -80,18 +82,29 @@
         type:Boolean,
         required:false,
         default: false
+      },
+      //update-begin-author:wangshuai date:20201021 for:LOWCOD-969 新增number属性，用于判断上传数量
+      number:{
+        type:Number,
+        required:false,
+        default:0
       }
+      //update-end-author:wangshuai date:20201021 for:LOWCOD-969 新增number属性，用于判断上传数量
     },
     watch:{
-      value(val){
-        if (val instanceof Array) {
-          this.initFileList(val.join(','))
-        } else {
-          this.initFileList(val)
-        }
-        if(!val || val.length==0){
-          this.picUrl = false;
-        }
+      value: {
+        handler(val,oldValue) {
+          if (val instanceof Array) {
+            this.initFileList(val.join(','))
+          } else {
+            this.initFileList(val)
+          }
+          if(!val || val.length==0){
+            this.picUrl = false;
+          }
+        },
+        //立刻执行handler
+        immediate: true
       }
     },
     created(){
@@ -132,6 +145,11 @@
       handleChange(info) {
         this.picUrl = false;
         let fileList = info.fileList
+        //update-begin-author:wangshuai date:20201022 for:LOWCOD-969 判断number是否大于0和是否多选，返回选定的元素。
+        if(this.number>0 && this.isMultiple){
+          fileList = fileList.slice(-this.number);
+        }
+        //update-end-author:wangshuai date:20201022 for:LOWCOD-969 判断number是否大于0和是否多选，返回选定的元素。
         if(info.file.status==='done'){
           if(info.file.response.success){
             this.picUrl = true;
@@ -171,7 +189,7 @@
           path = ''
         }
         let arr = [];
-        if(!this.isMultiple){
+        if(!this.isMultiple && uploadFiles.length>0){
           arr.push(uploadFiles[uploadFiles.length-1].response.message)
         }else{
           for(let a=0;a<uploadFiles.length;a++){
@@ -213,8 +231,9 @@
   * https://github.com/zhangdaiscott/jeecg-boot/issues/1810
   * https://github.com/zhangdaiscott/jeecg-boot/issues/1779
   */
-  /deep/ .imgupload .ant-upload-select{display:block}
-  /deep/ .imgupload .ant-upload.ant-upload-select-picture-card{ width:120px;height: 120px;}
-  /deep/ .imgupload .iconp{padding:32px;}
+
+  /deep/ .imgupload .iconp{padding:20px;}
   /* update--end--autor:lvdandan-----date:20201016------for：j-image-upload图片组件单张图片详情回显空白*/
+
+  /deep/ .image-upload-single-over .ant-upload-select{display: none}
 </style>

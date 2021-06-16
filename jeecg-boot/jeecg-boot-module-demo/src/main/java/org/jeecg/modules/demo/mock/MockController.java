@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/mock/api")
 @Slf4j
 public class MockController {
 
@@ -107,7 +107,11 @@ public class MockController {
 	public String getCabinetCountInfo() {
 		return readJson("classpath:org/jeecg/modules/demo/mock/json/getCntrNoCountInfo.json");
 	}
-	
+	@GetMapping(value = "/report/getTubiao")
+	public String getTubiao() {
+		return readJson("classpath:org/jeecg/modules/demo/mock/json/getTubiao.json");
+	}
+
 	/**
 	   * 实时磁盘监控
 	 * @param request
@@ -181,7 +185,13 @@ public class MockController {
 		return readJson("classpath:org/jeecg/modules/demo/mock/json/sysdatalog.json");
 	}
 	//author:lvdandan-----date：20190315---for:添加数据日志json----
-	
+
+	//--update-begin--author:wangshuai-----date：20201023---for:返回用户信息json数据----
+	@GetMapping(value = "/getUserInfo")
+	public String getUserInfo(){
+		return readJson("classpath:org/jeecg/modules/demo/mock/json/userinfo.json");
+	}
+	//--update-end--author:wangshuai-----date：20201023---for:返回用户信息json数据----
 	/**
 	 * 读取json格式文件
 	 * @param jsonSrc
